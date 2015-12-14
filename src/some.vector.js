@@ -7,6 +7,7 @@ var some = require( "./some.js" );
  * Objects for large number of vectors ( class )
  * Typed Arrays for reuse ( static )
  */
+
 var vec2 = function ( x, y ) {
   this.x = x;
   this.y = y;
@@ -18,6 +19,7 @@ vec2.create = function( a, b ) {
   var out = new some.Array( 2 );
   out[ 0 ] = a || 0;
   out[ 1 ] = b || 0;
+
   return out;
 };
 
@@ -33,6 +35,7 @@ vec2.clone = function( a ) {
   var out = new some.Array( 2 );
   out[ 0 ] = a[ 0 ];
   out[ 1 ] = a[ 1 ];
+
   return out;
 };
 
@@ -70,30 +73,33 @@ vec2.set = function( a, b, out ) {
 
 
 /**
- * length
+ * len
  */
-vec2.prototype.length = function ( ) {
+vec2.prototype.len = function ( ) {
   var x = this.x,
       y = this.y;
   return Math.sqrt( x * x + y * y );
 };
 
-vec2.length = function ( a ) {
+vec2.len = function ( a ) {
   var x = a[ 0 ],
       y = a[ 1 ];
   return Math.sqrt( x * x + y * y );
 };
 
-// aliases
-vec2.prototype.len = vec2.prototype.length;
-vec2.len = vec2.length;
+/**
+ * setLength
+ */
+vec2.prototype.setLength = function ( len ) {
+  return this.normalize().
+}
 
 
 /**
  * normalize
  */
 vec2.prototype.normalize = function ( ) {
-  var len = this.length( );
+  var len = this.len( );
   if ( len > 0 ) {
     len = 1 / len;
     this.x *= len;
@@ -103,7 +109,7 @@ vec2.prototype.normalize = function ( ) {
 };
 
 vec2.normalize = function( a, out ) {
-    var len = vec2.length( a );
+    var len = vec2.len( a );
     if ( len > 0 ) {
         len = 1 / len;
         out[ 0 ] = a[ 0 ] * len;
@@ -162,6 +168,10 @@ vec2.scale = function( a, b, out ) {
   out[ 0 ] = a[ 0 ] * b;
   out[ 1 ] = a[ 1 ] * b;
 };
+
+// aliases
+vec2.prototype.mult = vec2.prototype.scale;
+vec2.mult = vec2.scale;
 
 
 /**
@@ -230,6 +240,7 @@ vec2.negate = function ( a, out ) {
   out[ 1 ] = -a[ 1 ];
 };
 
+
 /**
  * inverse
  */
@@ -245,6 +256,7 @@ vec2.inverse = function( a, out ) {
   out[ 1 ] = 1.0 / a[ 1 ];
 };
 
+
 /**
  * dot product
  */
@@ -255,6 +267,43 @@ vec2.prototype.dot = function ( v ) {
 vec2.dot = function ( a, b ) {
   return a[ 0 ] * b[ 0 ] + a[ 1 ] * b[ 1 ];
 };
+
+
+/**
+ * heading
+ */
+vec2.prototype.heading = function ( ) {
+  return Math.atan2( this.x, this.y );
+};
+
+vec2.heading = function ( a ) {
+  return Math.atan2( a[ 0 ], a[ 1 ] );
+};
+
+
+/**
+ * rotate
+ */
+vec2.prototype.rotate = function( angle ) {
+  var heading = this.heading() + angle;
+  var len = this.len();
+
+  this.x = Math.cos( heading ) * len;
+  this.y = Math.sin( heading ) * len;
+
+  return this;
+};
+
+vec2.rotate = function ( a, angle, out ) {
+  var heading = vec2.heading( a ) + angle;
+  var len = vec2.len( a );
+
+  out[ 0 ] = Math.cos( heading ) * len;
+  out[ 1 ] = Math.sin( heading ) * len;
+
+  return this;
+};
+
 
 /**
  * linear interpolation
@@ -275,5 +324,7 @@ vec2.lerp = function ( a, b, t, out ) {
     out[ 1 ] = ay + t * ( b[ 1 ] - ay );
     return out;
 };
+
+some.vec2 = vec2;
 
 module.exports = some;
