@@ -1,51 +1,55 @@
-p5.SDrawable = function ( /* p5 Canvas */ world ) {
+'use strict';
+
+var some = require( 'some' );
+
+var drawable = function ( world ) {
   this.world = world;
 
-  this.position = new p5.Vector();
-  this.size = new p5.Vector( 1, 0 );
-  this.axis = new p5.Vector( 1, 0 );
+  this.position = new some.vec2();
+  this.size = new some.vec2( 1, 0 );
+  this.axis = new some.vec2( 1, 0 );
   this.scale = 1;
   // TODO this.direction
-  this.anchor = new p5.Vector( 1, 0 );
-  this.originalAxis = new p5.Vector( 1, 0 );
+  this.anchor = new some.vec2( 1, 0 );
+  this.originalAxis = new some.vec2( 1, 0 );
   
-  this.from = new p5.Vector(); 
-  this.to = new p5.Vector();
+  this.from = new some.vec2(); 
+  this.to = new some.vec2();
 };
 
-p5.SDrawable.prototype.setPosition = function ( /* float */ x, /* float */ y ) {
+drawable.prototype.setPosition = function ( x, y ) {
   this.position.set( x, y );
   return this;
 };
 
-p5.SDrawable.prototype.setSize = function ( /* float */ x, /* float */ y ) {
+drawable.prototype.setSize = function ( /* float */ x, /* float */ y ) {
   this.size.set( x, y );
   return this;
 };
 
-p5.SDrawable.prototype.setAnchor = function ( /* float */ x, /* float */ y ) {
+drawable.prototype.setAnchor = function ( x, y ) {
   this.anchor.set( x, y );
   return this;
 }
 
-p5.SDrawable.prototype.setAxis = function ( /* float */ x, /* float */ y ) {
+drawable.prototype.setAxis = function ( x, y ) {
   this.axis.set( x, y );
   this.originalAxis.set( x, y );
   return this;
 };
 
-p5.SDrawable.prototype.setRotation = function ( /* float */ angle ) {
+drawable.prototype.setRotation = function ( angle ) {
   angle = this.world.radians( angle );
   this.axis.rotate( this.originalAxis.heading() - this.axis.heading() + angle );
   return this;
 };
 
-p5.SDrawable.prototype.setScale = function ( /* float */ scale ) {
+drawable.prototype.setScale = function ( scale ) {
   this.scale = scale || 1;
   return this;
 };
 
-p5.SDrawable.prototype.draw = function ( /* p5.Vector */ from, /* p5.Vector */ size, /* float */ sizeX, /* float */ sizeY ) {
+drawable.prototype.draw = function ( from, size, sizeX, sizeY ) {
   if ( typeof sizeX !== "undefined" && typeof sizeY !== "undefined" ) {
     // fromX, fromY
     this.from.set( from, size );
@@ -91,10 +95,9 @@ p5.SDrawable.prototype.draw = function ( /* p5.Vector */ from, /* p5.Vector */ s
   return this;
 };
 
-p5.SDrawable.prototype.representation = function () {
+drawable.prototype.representation = function () {
 
 };
 
-p5.prototype.createSDrawable = function ( /* p5 Canvas */ world ) {
-  return new p5.SDrawable( world );
-};
+some.drawable = drawable;
+module.exports = some;

@@ -1,4 +1,4 @@
-var some = require( "./some.js" );
+var some = require( "some" );
 
 /**
  * vec 2 
@@ -326,5 +326,4 @@ vec2.lerp = function ( a, b, t, out ) {
 };
 
 some.vec2 = vec2;
-
 module.exports = some;

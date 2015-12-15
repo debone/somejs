@@ -1,4 +1,4 @@
-var some = require( "./some.js" );
+var some = require( "some" );
 
 /**
  * Seedable random number generator functions.
@@ -222,5 +222,4 @@ random.prototype.gamma = function( a ) {
 
 
 some.random = random;
-
 module.exports = some;
