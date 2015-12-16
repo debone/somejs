@@ -7,7 +7,7 @@ var some = function ( ) {
 some.Array = ( typeof Float32Array !== 'undefined' ) ? Float32Array : Array;
 
 // Conversion Multiplications
-some.degrees = Math.PI / 180;
-some.radians = 1 / some.degrees;
+some.toRadians = Math.PI / 180;
+some.toDegrees = 1 / some.toDegrees;
 
 module.exports = some;

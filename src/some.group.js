@@ -1,61 +1,67 @@
-p5.SGroup = function ( /* p5 Canvas */ world, /* object */ options ) {
-  p5.SDrawable.call( this, world );
+'use strict';
 
-  this.SLayout = {
+var some = require( 'some' );
+
+var group = function ( world, options ) {
+  some.drawable.call( this, world );
+
+  this.layout = {
     next: function () { }
   };
-  this.SColorsPool = {
+
+  this.colorsPool = {
     next: function () { }
   };
-  this.SDrawablesPool = {};
+
+  this.drawablesPool = {};
 
   options = options || { };
 
   if ( typeof options.layout !== "undefined" ) {
-    this.SLayout = options.layout;
+    this.layout = options.layout;
   }
   if ( typeof options.colorsPool !== "undefined" ) {
-    this.SColorsPool = options.colorsPool;
+    this.colorsPool = options.colorsPool;
   }
   if ( typeof options.drawablesPool !== "undefined" ) {
-    this.SDrawablesPool = options.drawablesPool;
+    this.drawablesPool = options.drawablesPool;
   }
 
   return this; 
 };
 
-p5.SGroup.prototype = Object.create( p5.SDrawable.prototype );
+group.prototype = Object.create( some.drawable.prototype );
 
-p5.SGroup.prototype.setDrawablesPool = function ( /* SDrawablesPool */ drawablesPool ) {
-  this.SDrawablesPool = drawablesPool;
+group.prototype.setDrawablesPool = function ( drawablesPool ) {
+  this.drawablesPool = drawablesPool;
   return this;
 };
 
-p5.SGroup.prototype.setColorsPool = function ( /* SColorsPool */ colorsPool ) {
-  this.SColorsPool = colorsPool;
+group.prototype.setColorsPool = function ( colorsPool ) {
+  this.colorsPool = colorsPool;
   return this;
 };
 
-p5.SGroup.prototype.setLayout = function ( /* SLayout */ layout ) {
-  this.SLayout = layout;
+group.prototype.setLayout = function ( layout ) {
+  this.layout = layout;
   return this;
 };
 
-p5.SGroup.prototype.representation = function ( ) {
+group.prototype.representation = function ( ) {
   var n, c, p;
-  this.SLayout.reset();
-  //this.SColorsPool.reset();
-  while ( this.SDrawablesPool.next() ) {
-    n = this.SDrawablesPool.get();
+  this.layout.reset();
+  //this.colorsPool.reset();
+  while ( this.drawablesPool.next() ) {
+    n = this.drawablesPool.get();
 
-    if ( this.SLayout.next() ) { 
-      p = this.SLayout.get();
+    if ( this.layout.next() ) { 
+      p = this.layout.get();
       n.drawable.setPosition( p.from.x, p.from.y );
       n.drawable.setSize( p.to.x, p.to.y );
     }
 
-    if ( this.SColorsPool.next() ) {
-      c = this.SColorsPool.get();
+    if ( this.colorsPool.next() ) {
+      c = this.colorsPool.get();
 
       if ( c.fill ) {
         this.world.fill( c.fill );
@@ -78,6 +84,6 @@ p5.SGroup.prototype.representation = function ( ) {
   }
 };
 
-p5.prototype.createSGroup = function ( /* p5 Canvas */ world, /* object */ options ) {
-  return new p5.SGroup( world, options );
-};
+some.group = group;
+
+module.exports = some;

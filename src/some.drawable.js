@@ -22,7 +22,7 @@ drawable.prototype.setPosition = function ( x, y ) {
   return this;
 };
 
-drawable.prototype.setSize = function ( /* float */ x, /* float */ y ) {
+drawable.prototype.setSize = function ( x, y ) {
   this.size.set( x, y );
   return this;
 };
@@ -39,7 +39,7 @@ drawable.prototype.setAxis = function ( x, y ) {
 };
 
 drawable.prototype.setRotation = function ( angle ) {
-  angle = this.world.radians( angle );
+  angle = angle * some.toRadians;
   this.axis.rotate( this.originalAxis.heading() - this.axis.heading() + angle );
   return this;
 };
@@ -60,10 +60,10 @@ drawable.prototype.draw = function ( from, size, sizeX, sizeY ) {
     this.to.set( size || this.size );
   }
 
-  var magnitude = this.to.mag() / this.axis.mag();
+  var magnitude = this.to.len() / this.axis.len();
 
   // Center anchor
-  //this.from.add( this.anchor ); 
+  // this.from.add( this.anchor ); 
 
   this.world.push();
     this.world.translate( this.from.x, this.from.y );

@@ -1,4 +1,8 @@
-p5.SGrid = function ( /* p5 Canvas */ world, /* int */ width, /* int */ count, /* object */ options ) {
+'use strict';
+
+var some = require( 'some' );
+
+var grid = function ( world, width, count, options ) {
   this.world = world;
 
   this.fromVerts = [ ];
@@ -22,9 +26,9 @@ p5.SGrid = function ( /* p5 Canvas */ world, /* int */ width, /* int */ count, /
   return this;
 };
 
-p5.SGrid.prototype = Object.create( p5.SDrawable.prototype );
+grid.prototype = Object.create( some.drawable.prototype );
 
-p5.SGrid.prototype.generate = function ( /* int */ width, /* int */ count, /* int */ bend ) {
+grid.prototype.generate = function ( width, count, bend ) {
   var t, s;
 
   this.fromVerts = [];
@@ -36,22 +40,17 @@ p5.SGrid.prototype.generate = function ( /* int */ width, /* int */ count, /* in
 
   for( var i = 0; i < count; i++ ) {
     //boom new vert
-    this.fromVerts[ i ] = new p5.Vector( 
+    this.fromVerts[ i ] = new some.vec2( 
       this.horizontal * ( i % width ) , 
       this.vertical * Math.floor( i / width)
     );
 
-    this.toVerts[ i ] = new p5.Vector(
-      1, 
-      0
-    );
+    this.toVerts[ i ] = new some.vec2( 1, 0 );
 
     this.originVerts[ i ] = this.fromVerts[ i ].copy();
     this.originHeadings[ i ] = this.toVerts[ i ].heading();
 
-    if ( this.toVerts[ i ].mag() > 0 ) {
-      this.toVerts[ i ].normalize();
-    }
+    this.toVerts[ i ].normalize();
 
     if ( bend === 1 ) {
       this.toVerts[ i ].mult( -1 );
@@ -65,35 +64,35 @@ p5.SGrid.prototype.generate = function ( /* int */ width, /* int */ count, /* in
   return this;
 };
 
-p5.SGrid.prototype.rotateVerts = function ( /*float*/ angle ) {
-  angle = this.world.radians( angle );
+grid.prototype.rotateVerts = function ( angle ) {
+  angle = angle * some.toRadians;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    this.toVerts[ i ].rotate( this.originHeadings[i] + angle - this.toVerts[ i ].heading() );
+    this.toVerts[ i ].rotate( this.originHeadings[ i ] + angle - this.toVerts[ i ].heading() );
   }
 
   return this;
 };
 
-p5.SGrid.prototype.moveVerts = function ( /*PVector*/ movement ) {
+grid.prototype.moveVerts = function ( movement ) {
   var angle;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = this.toVerts[ i ].heading() - Math.abs( movement.heading() );
+    angle = this.toVerts[ i ].heading( ) - Math.abs( movement.heading( ) );
     movement.rotate( angle );
-    this.fromVerts[ i ] = p5.Vector.add( this.originVerts[ i ], movement );
-    movement.rotate( -angle );
+    this.fromVerts[ i ] = some.vec2.add( this.originVerts[ i ], movement );
+    movement.rotate( - angle );
   }
 
   return this;
 };
 
-p5.SGrid.prototype.setMargin = function ( /* float */ horizontal, /* float */ vertical, /* int */ bend ) {
+grid.prototype.setMargin = function ( horizontal, vertical, bend ) {
   this.horizontal = horizontal || this.horizontal;
   this.vertical = vertical || horizontal || this.vertical;
 
   this.generate( this.width, this.count, bend || 0 );
 };
 
-p5.SGrid.prototype.next = function () {
+grid.prototype.next = function ( ) {
   if ( this.index + 1 !== this.fromVerts.length ) {
     this.index++;
   }
@@ -103,7 +102,7 @@ p5.SGrid.prototype.next = function () {
   return true;
 };
 
-p5.SGrid.prototype.get = function () {
+grid.prototype.get = function ( ) {
   return {
     from: {
       x: this.fromVerts[ this.index ].x,
@@ -116,11 +115,11 @@ p5.SGrid.prototype.get = function () {
   };
 };
 
-p5.SGrid.prototype.reset = function ( ) {
+grid.prototype.reset = function ( ) {
   this.index = -1;
   return this;
 };
 
-p5.prototype.createSGrid = function ( /* p5 Canvas */ world, /* int */ width, /* int */ count, /* object */ options ) {
-  return new p5.SGrid( world, width, count, options );
-};
+some.grid = grid;
+
+module.exports = some;

@@ -1,5 +1,9 @@
-p5.SSpine = function ( /* p5 Canvas */ world, /* float[][] */ shapeBeziers, /* p5.Vector */ shapeAxis, /* int */ steps, /* int */ bend  ) {
-  p5.SShape.call( this, world, shapeBeziers, shapeAxis );
+'use strict';
+
+var some = require( 'some' );
+
+spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
+  shape.call( this, world, shapeBeziers, shapeAxis );
 
   this.drawables = [ ];
   this.fromVerts = [ ];
@@ -23,9 +27,9 @@ p5.SSpine = function ( /* p5 Canvas */ world, /* float[][] */ shapeBeziers, /* p
   return this;
 };
 
-p5.SSpine.prototype = Object.create( p5.SDrawable.prototype );
+spine.prototype = Object.create( some.drawable.prototype );
 
-p5.SSpine.prototype.init = function( /* int */ precision ) {
+spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
   
   precision = precision || 70;
@@ -36,7 +40,7 @@ p5.SSpine.prototype.init = function( /* int */ precision ) {
     this.shapePoints[ i ].t = [ ];
     this.shapePoints[ i ].s = [ ];
 
-    step = 1 / ( Math.floor( ( p5.Vector.sub( this.shape[ i + 1 ], this.shape[ i ] ).mag() / 25 ) * precision ) + 1 );
+    step = 1 / ( Math.floor( ( some.vec2.sub( this.shape[ i + 1 ], this.shape[ i ] ).mag() / 25 ) * precision ) + 1 );
 
     lastX = this.shape[ i ].x;
     lastY = this.shape[ i ].y;
@@ -72,7 +76,7 @@ p5.SSpine.prototype.init = function( /* int */ precision ) {
   return this;
 };
 
-p5.SSpine.prototype._findClosestT = function ( /* int */ shape, /* int */ s ) {
+spine.prototype._findClosestT = function ( /* int */ shape, /* int */ s ) {
   var points = this.shapePoints[ shape ];
   var i, l, curr;
 
@@ -101,7 +105,7 @@ p5.SSpine.prototype._findClosestT = function ( /* int */ shape, /* int */ s ) {
   }
 };
 
-p5.SSpine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
+spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
   var progress = 0, 
       shapeProgress = 0.001,
       shapeStep = 0,
@@ -128,7 +132,7 @@ p5.SSpine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
     t = this._findClosestT( shapeStep, s );//lookup this.shapePoints;
 
     //boom new vert
-    this.fromVerts[ i ] = new p5.Vector( 
+    this.fromVerts[ i ] = new some.vec2( 
       this.world.bezierPoint( 
         this.shape[ shapeStep ].x, 
         this.c1[ shapeStep ].x, 
@@ -143,7 +147,7 @@ p5.SSpine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
         t ) 
     );
 
-    this.toVerts[ i ] = new p5.Vector(
+    this.toVerts[ i ] = new some.vec2(
       this.world.bezierTangent( 
         this.shape[ shapeStep ].x, 
         this.c1[ shapeStep ].x, 
@@ -177,7 +181,7 @@ p5.SSpine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
   return this;
 };
 
-p5.SSpine.prototype.rotateVerts = function ( /*float*/ angle ) {
+spine.prototype.rotateVerts = function ( /*float*/ angle ) {
   angle = this.world.radians( angle );
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
     this.toVerts[ i ].rotate( this.originHeadings[i] + angle - this.toVerts[ i ].heading() );
@@ -186,19 +190,19 @@ p5.SSpine.prototype.rotateVerts = function ( /*float*/ angle ) {
   return this;
 };
 
-p5.SSpine.prototype.moveVerts = function ( /*PVector*/ movement ) {
+spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
   var angle;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
     angle = this.toVerts[ i ].heading() - Math.abs( movement.heading() );
     movement.rotate( angle );
-    this.fromVerts[ i ] = p5.Vector.add( this.originVerts[ i ], movement );
+    this.fromVerts[ i ] = some.vec2.add( this.originVerts[ i ], movement );
     movement.rotate( -angle );
   }
 
   return this;
 };
 
-p5.SSpine.prototype.next = function () {
+spine.prototype.next = function () {
   if ( this.index + 1 !== this.fromVerts.length ) {
     this.index++;
   }
@@ -208,7 +212,7 @@ p5.SSpine.prototype.next = function () {
   return true;
 };
 
-p5.SSpine.prototype.get = function () {
+spine.prototype.get = function () {
   return {
     from: {
       x: this.fromVerts[ this.index ].x,
@@ -221,11 +225,11 @@ p5.SSpine.prototype.get = function () {
   };
 };
 
-p5.SSpine.prototype.reset = function ( ) {
+spine.prototype.reset = function ( ) {
   this.index = -1;
   return this;
 };
 
-p5.prototype.createSSpine = function ( /* p5 Canvas */ world, /* float[ ][ ] */ shapeBeziers, /* p5.Vector */ shapeAxis, /* int */ steps, /* int */ bend  ) {
-  return new p5.SSpine( world, shapeBeziers, shapeAxis, steps, bend );
-};
+some.spine = spine;
+
+module.exports = some;

@@ -1,4 +1,8 @@
-p5.SDrawablesPool = function ( /* p5 Canvas */ world, /* object */ options ) {
+'use strict';
+
+var some = require( 'some' );
+
+drawablesPool = function ( world, options ) {
   this.world = world;
 
   this.drawables = [ ];
@@ -20,9 +24,9 @@ p5.SDrawablesPool = function ( /* p5 Canvas */ world, /* object */ options ) {
   }
 };
 
-p5.SDrawablesPool.prototype.add = function ( /* SDrawable */ drawable, /* int */ count, /* Custom draw function */ drawableFunction ) {
+drawablesPool.prototype.add = function ( drawable, count, drawableFunction ) {
   count = count || 1;
-  if ( drawable instanceof p5.SDrawable ) {
+  if ( drawable instanceof some.drawable ) {
     while ( count -- ) {
       this.drawables[ this.drawables.length ] = drawable;
       this.drawablesFunctions[ this.drawablesFunctions.length ] = drawableFunction || function ( ) { };
@@ -32,7 +36,7 @@ p5.SDrawablesPool.prototype.add = function ( /* SDrawable */ drawable, /* int */
   return this;
 };
 
-p5.SDrawablesPool.prototype.remove = function ( /* int */ index ) {
+drawablesPool.prototype.remove = function ( index ) {
   if ( index > -1 ) {
     this.drawables = this.drawables.splice( index, 1 );
     this.drawablesFunctions = this.drawablesFunctions.splice( index, 1 );
@@ -41,14 +45,14 @@ p5.SDrawablesPool.prototype.remove = function ( /* int */ index ) {
   return this;
 };
 
-p5.SDrawablesPool.prototype.clear = function ( ) {
+drawablesPool.prototype.clear = function ( ) {
   this.drawables = [ ];
   this.drawablesFunctions = [ ];
 
   return this;
 };
 
-p5.SDrawablesPool.prototype.next = function ( ) {
+drawablesPool.prototype.next = function ( ) {
   if ( this.index + 1 !== this.drawables.length ) {
     this.index++;
     return true;
@@ -57,18 +61,18 @@ p5.SDrawablesPool.prototype.next = function ( ) {
   return false;
 };
 
-p5.SDrawablesPool.prototype.get = function ( ) {
+drawablesPool.prototype.get = function ( ) {
   return { 
     drawable: this.drawables[ this.index ],
     fn: ( this.drawFunction ) ? this.drawFunction : this.drawablesFunctions[ this.index ]
   };
 };
 
-p5.SDrawablesPool.prototype.reset = function ( ) {
+drawablesPool.prototype.reset = function ( ) {
   this.index = -1;
   return this;
 };
 
-p5.prototype.createSDrawablesPool = function ( /* p5 Canvas */ world, /* object */ options ) {
-  return new p5.SDrawablesPool( world, options );
-};
+some.drawablesPool = drawablesPool;
+
+module.exports = some;

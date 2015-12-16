@@ -1,4 +1,8 @@
-p5.SColorsPool = function ( /* p5 Canvas */ world, /* object */ options ) {
+'use strict';
+
+var some = require( 'some' );
+
+var colorsPool = function ( world, options ) {
   this.world = world;
 
   this.colors = [ ];
@@ -12,9 +16,9 @@ p5.SColorsPool = function ( /* p5 Canvas */ world, /* object */ options ) {
   }
 };
 
-p5.SColorsPool.prototype.add = function ( /* Color */ color, /* int */ count ) {
+colorsPool.prototype.add = function ( color, count ) {
   count = count || 1;
-  if ( color instanceof p5.Color ) {
+  if ( color instanceof some.color ) {
     while ( count -- ) {
       this.colors[ this.colors.length ] = color;
     }
@@ -23,7 +27,7 @@ p5.SColorsPool.prototype.add = function ( /* Color */ color, /* int */ count ) {
   return this;
 };
 
-p5.SColorsPool.prototype.remove = function ( /* int */ index ) {
+colorsPool.prototype.remove = function ( index ) {
   if ( index > -1 ) {
     this.colors = this.colors.splice( index, 1 );
   }
@@ -31,13 +35,13 @@ p5.SColorsPool.prototype.remove = function ( /* int */ index ) {
   return this;
 };
 
-p5.SColorsPool.prototype.clear = function ( ) {
+colorsPool.prototype.clear = function ( ) {
   this.colors = [ ];
 
   return this;
 };
 
-p5.SColorsPool.prototype.next = function ( ) {
+colorsPool.prototype.next = function ( ) {
   if ( this.index + 1 !== this.colors.length ) {
     this.index++;
   }
@@ -47,18 +51,18 @@ p5.SColorsPool.prototype.next = function ( ) {
   return true;
 };
 
-p5.SColorsPool.prototype.get = function ( ) {
+colorsPool.prototype.get = function ( ) {
   return { 
     stroke: this.colors[ this.index + 1 ],
     fill: this.colors[ this.index ]
   };
 };
 
-p5.SColorsPool.prototype.reset = function ( ) {
+colorsPool.prototype.reset = function ( ) {
   this.index = -1;
   return this;
 };
 
-p5.prototype.createSColorsPool = function ( /* p5 Canvas */ world, /* object */ options ) {
-  return new p5.SColorsPool( world, options );
-};
+some.colorsPool = colorsPool;
+
+module.exports = some;
