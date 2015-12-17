@@ -63,6 +63,8 @@ var noise = function() {
   this.aOctPers; // persistence per octave
   this.fPersMax; // 1 / max persistence
 
+  this.random = new some.random( );
+
   // 1D dotproduct
   var dot1 = function dot1(g, x) { 
     return g[0]*x;
@@ -415,7 +417,7 @@ noise.prototype.setPerm = function ( ) {
   var p = [];
 
   for ( i=0; i<256; i++ ) { 
-    p[ i ] = Math.floor( some.random.uniform() * 256 );
+    p[ i ] = Math.floor( this.random.uniform() * 256 );
   }
 
   // To remove the need for index wrapping, double the permutation table length 
@@ -424,6 +426,10 @@ noise.prototype.setPerm = function ( ) {
     this.aPerm[ i ] = p[ i & 255 ];
   }
 };
+
+noise.prototype.setSeed = function ( seed ) {
+  this.random = new some.random( seed );
+}
 
 noise.prototype.octFreqPers = function ( ) {
   var fFreq, fPers;
