@@ -1,6 +1,6 @@
 'use strict';
 
-var some = require( 'some' );
+var some = require( './some.core' );
 
 var shape = function ( world, shapeBeziers, shapeAxis ) {
   some.drawable.call( this, world );

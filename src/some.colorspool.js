@@ -1,6 +1,6 @@
 'use strict';
 
-var some = require( 'some' );
+var some = require( './some.core' );
 
 var colorsPool = function ( world, options ) {
   this.world = world;

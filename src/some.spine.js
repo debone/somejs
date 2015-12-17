@@ -1,6 +1,6 @@
 'use strict';
 
-var some = require( 'some' );
+var some = require( './some.core' );
 
 spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
   shape.call( this, world, shapeBeziers, shapeAxis );

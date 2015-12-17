@@ -1,6 +1,6 @@
 'use strict';
 
-var some = require( "some" );
+var some = require( './some.core' );
 
 /** 
  * PerlinSimplex 1.2

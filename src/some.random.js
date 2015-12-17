@@ -1,4 +1,6 @@
-var some = require( "some" );
+'use strict';
+
+var some = require( './some.core' );
 
 /**
  * Seedable random number generator functions.

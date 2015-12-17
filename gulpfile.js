@@ -1,16 +1,20 @@
 var gulp = require( 'gulp' );
 var browserify = require( 'browserify' );
-var transform = require( 'vinyl-transform' );
+var source = require( 'vinyl-source-stream' );
+var buffer = require( 'vinyl-buffer' );
+var gutil = require( 'gulp-util' );
 var uglify = require( 'gulp-uglify' );
 
 gulp.task( 'default', function ( ) {
-  var browserified = transform( function ( filename ) {
-    var b = browserify( filename );
-    return b.bundle( );
-  } );
+  var b = browserify({
+    entries: './app.js',
+    debug: true
+  });
 
-  return gulp.src( [ './src/**/*.js' ] )
-    .pipe( browserified )
-    .pipe( uglify( ) )
-    .pipe( gulp.dest( './dist' ) );
+  return b.bundle( )
+    .pipe( source( 'some.js' ) )
+    .pipe( buffer( ) )
+    // Add transformation tasks to the pipeline here.
+    .pipe( uglify( ) ).on( 'error', gutil.log )
+    .pipe( gulp.dest( './dist/' ) );
 } );

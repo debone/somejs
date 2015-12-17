@@ -1,4 +1,6 @@
-var some = require( "some" );
+'use strict';
+
+var some = require( './some.core' );
 
 /**
  * vec 2 
@@ -88,12 +90,16 @@ vec2.len = function ( a ) {
 };
 
 /**
- * setLength
+ * setLen
  */
-vec2.prototype.setLength = function ( len ) {
-  return this.normalize().
+vec2.prototype.setLen = function ( len ) {
+  return this.normalize( ).mult( len );
 }
 
+vec2.setLen = function ( a, b, out ) {
+  vec2.normalize( a, out );
+  vec2.scale( out, b, out );
+}
 
 /**
  * normalize

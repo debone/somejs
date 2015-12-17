@@ -1,6 +1,6 @@
 'use strict';
 
-var some = require( 'some' );
+var some = require( './some.core' );
 
 var grid = function ( world, width, count, options ) {
   this.world = world;
