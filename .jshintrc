@@ -1,0 +1,9 @@
+{
+  "node": true,
+  "globals": {
+    "DEBUG": true,
+    "require": true,
+    "module": true,
+    "p5": true
+  } 
+}

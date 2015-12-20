@@ -18,7 +18,8 @@ var colorsPool = function ( world, options ) {
 
 colorsPool.prototype.add = function ( color, count ) {
   count = count || 1;
-  if ( color instanceof some.color ) {
+  // TODO some.color
+  if ( color instanceof p5.Color ) {
     while ( count -- ) {
       this.colors[ this.colors.length ] = color;
     }

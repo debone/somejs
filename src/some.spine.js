@@ -2,8 +2,8 @@
 
 var some = require( './some.core' );
 
-spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
-  shape.call( this, world, shapeBeziers, shapeAxis );
+var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
+  some.shape.call( this, world, shapeBeziers, shapeAxis );
 
   this.drawables = [ ];
   this.fromVerts = [ ];
@@ -32,15 +32,18 @@ spine.prototype = Object.create( some.drawable.prototype );
 spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
   
+  var temp = new some.vec2();
+
   precision = precision || 70;
 
   for ( var i = 0; i < this.shapeSize; i++ ) {
+    temp.copy( this.shape[ i + 1 ] );
     this.shapeLength[ i ] = 0;
     this.shapePoints[ i ] = { };
     this.shapePoints[ i ].t = [ ];
     this.shapePoints[ i ].s = [ ];
 
-    step = 1 / ( Math.floor( ( some.vec2.sub( this.shape[ i + 1 ], this.shape[ i ] ).mag() / 25 ) * precision ) + 1 );
+    step = 1 / ( Math.floor( ( temp.sub( this.shape[ i ] ).len() / 25 ) * precision ) + 1 );
 
     lastX = this.shape[ i ].x;
     lastY = this.shape[ i ].y;
@@ -162,19 +165,17 @@ spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
         t )
     );
 
-    this.originVerts[ i ] = this.fromVerts[ i ].copy();
+    this.originVerts[ i ] = this.fromVerts[ i ].clone();
     this.originHeadings[ i ] = this.toVerts[ i ].heading();
 
-    if ( this.toVerts[ i ].mag() > 0 ) {
-      this.toVerts[ i ].normalize();
-    }
+    this.toVerts[ i ].normalize();
 
     if ( bend === 1 ) {
       this.toVerts[ i ].mult( -1 );
     }
     else if ( bend === 2 ) {
-      this.fromVerts[ i + steps ] = this.fromVerts[ i ].copy();
-      this.toVerts[ i + steps ] = this.toVerts[ i ].copy();
+      this.fromVerts[ i + steps ] = this.fromVerts[ i ].clone();
+      this.toVerts[ i + steps ] = this.toVerts[ i ].clone();
     }
   }
 
@@ -195,7 +196,7 @@ spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
     angle = this.toVerts[ i ].heading() - Math.abs( movement.heading() );
     movement.rotate( angle );
-    this.fromVerts[ i ] = some.vec2.add( this.originVerts[ i ], movement );
+    this.fromVerts[ i ] = this.originVerts[ i ].clone().add( movement );
     movement.rotate( -angle );
   }
 
@@ -214,14 +215,8 @@ spine.prototype.next = function () {
 
 spine.prototype.get = function () {
   return {
-    from: {
-      x: this.fromVerts[ this.index ].x,
-      y: this.fromVerts[ this.index ].y
-    },
-    to: {
-      x: this.toVerts[ this.index ].x ,
-      y: this.toVerts[ this.index ].y
-    }
+    from: this.fromVerts[ this.index ].clone( ),
+    to: this.toVerts[ this.index ].clone( )
   };
 };
 

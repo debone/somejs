@@ -47,7 +47,7 @@ grid.prototype.generate = function ( width, count, bend ) {
 
     this.toVerts[ i ] = new some.vec2( 1, 0 );
 
-    this.originVerts[ i ] = this.fromVerts[ i ].copy();
+    this.originVerts[ i ] = this.fromVerts[ i ].clone();
     this.originHeadings[ i ] = this.toVerts[ i ].heading();
 
     this.toVerts[ i ].normalize();
@@ -56,8 +56,8 @@ grid.prototype.generate = function ( width, count, bend ) {
       this.toVerts[ i ].mult( -1 );
     }
     else if ( bend === 2 ) {
-      this.fromVerts[ i + width ] = this.fromVerts[ i ].copy();
-      this.toVerts[ i + width ] = this.toVerts[ i ].copy();
+      this.fromVerts[ i + width ].copy( this.fromVerts[ i ] );
+      this.toVerts[ i + width ].copy( this.toVerts[ i ] );
     }
   }
 
@@ -78,7 +78,7 @@ grid.prototype.moveVerts = function ( movement ) {
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
     angle = this.toVerts[ i ].heading( ) - Math.abs( movement.heading( ) );
     movement.rotate( angle );
-    this.fromVerts[ i ] = some.vec2.add( this.originVerts[ i ], movement );
+    this.fromVerts[ i ] = this.originVerts[ i ].clone().add( movement );
     movement.rotate( - angle );
   }
 
@@ -104,14 +104,8 @@ grid.prototype.next = function ( ) {
 
 grid.prototype.get = function ( ) {
   return {
-    from: {
-      x: this.fromVerts[ this.index ].x,
-      y: this.fromVerts[ this.index ].y
-    },
-    to: {
-      x: this.toVerts[ this.index ].x ,
-      y: this.toVerts[ this.index ].y
-    }
+    from: this.fromVerts[ this.index ].clone( ),
+    to: this.toVerts[ this.index ].clone( )
   };
 };
 

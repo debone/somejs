@@ -94,12 +94,12 @@ vec2.len = function ( a ) {
  */
 vec2.prototype.setLen = function ( len ) {
   return this.normalize( ).mult( len );
-}
+};
 
 vec2.setLen = function ( a, b, out ) {
   vec2.normalize( a, out );
   vec2.scale( out, b, out );
-}
+};
 
 /**
  * normalize

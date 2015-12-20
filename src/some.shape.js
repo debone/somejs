@@ -17,7 +17,7 @@ var shape = function ( world, shapeBeziers, shapeAxis ) {
     this.axis = new some.vec2( shapeAxis.shift(), shapeAxis.shift() );
   }
 
-  this.size = this.axis.copy();
+  this.size.copy( this.axis );
   this.shapeSize = Math.floor( this.shapeSize / 6 );
 
   this.shape.push( new some.vec2( shapeBeziers.shift(), shapeBeziers.shift() ) );

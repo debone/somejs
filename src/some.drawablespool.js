@@ -2,7 +2,7 @@
 
 var some = require( './some.core' );
 
-drawablesPool = function ( world, options ) {
+var drawablesPool = function ( world, options ) {
   this.world = world;
 
   this.drawables = [ ];

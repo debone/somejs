@@ -55,13 +55,13 @@ var noise = function() {
   var t0, t1, t2, t3, t4;
   
   // To remove the need for index wrapping, double the permutation table length
-  this.aPerm;
+  this.aPerm = [ ];
 
   this.iOctaves = 1;
   this.fPersistence = 0.5;
-  this.aOctFreq; // frequency per octave
-  this.aOctPers; // persistence per octave
-  this.fPersMax; // 1 / max persistence
+  this.aOctFreq = [ ]; // frequency per octave
+  this.aOctPers = [ ]; // persistence per octave
+  this.fPersMax = 0; // 1 / max persistence
 
   this.random = new some.random( );
 
@@ -429,16 +429,16 @@ noise.prototype.setPerm = function ( ) {
 
 noise.prototype.setSeed = function ( seed ) {
   this.random = new some.random( seed );
-}
+};
 
 noise.prototype.octFreqPers = function ( ) {
   var fFreq, fPers;
   this.aOctFreq = [ ];
   this.aOctPers = [ ];
   this.fPersMax = 0;
-  for ( var i = 0; i < iOctaves; i++ ) {
+  for ( var i = 0; i < this.iOctaves; i++ ) {
     fFreq = Math.pow( 2, i );
-    fPers = Math.pow( fPersistence, i );
+    fPers = Math.pow( this.fPersistence, i );
     this.fPersMax += fPers;
     this.aOctFreq.push( fFreq );
     this.aOctPers.push( fPers );
@@ -453,9 +453,9 @@ noise.prototype.noise = function ( x, y, z, w ) {
     fFreq = this.aOctFreq[ g ];
     fPers = this.aOctPers[ g ];
     switch ( arguments.length ) {
-      case 4:  fResult += fPers * noise4d( fFreq * x, fFreq * y, fFreq * z, fFreq * w ); break;
-      case 3:  fResult += fPers * noise3d( fFreq * x, fFreq * y, fFreq * z ); break;
-      default: fResult += fPers * noise2d( fFreq * x, fFreq * y );
+      case 4:  fResult += fPers * this.noise4d( fFreq * x, fFreq * y, fFreq * z, fFreq * w ); break;
+      case 3:  fResult += fPers * this.noise3d( fFreq * x, fFreq * y, fFreq * z ); break;
+      default: fResult += fPers * this.noise2d( fFreq * x, fFreq * y );
     }
   }
   return ( fResult * this.fPersMax + 1 ) * 0.5;

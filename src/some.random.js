@@ -203,15 +203,16 @@ random.prototype.poisson = function( mean ) {
  * @returns {number} Number from the gamma distribution.
  */
 random.prototype.gamma = function( a ) {
+  var v, x, u, x2;
     var d = ( a < 1 ? 1 + a : a ) - 1 / 3;
     var c = 1 / Math.sqrt( 9 * d );
     do {
         do {
-            var x = this.normal( );
-            var v = Math.pow( c * x + 1, 3 );
+            x = this.normal( );
+            v = Math.pow( c * x + 1, 3 );
         } while ( v <= 0 );
-        var u = this.uniform( );
-        var x2 = Math.pow( x, 2 );
+        u = this.uniform( );
+        x2 = Math.pow( x, 2 );
     } while ( u >= 1 - 0.0331 * x2 * x2 &&
              Math.log( u ) >= 0.5 * x2 + d * ( 1 - v + Math.log( v ) ) );
     if ( a < 1 ) {

@@ -30,7 +30,7 @@ drawable.prototype.setSize = function ( x, y ) {
 drawable.prototype.setAnchor = function ( x, y ) {
   this.anchor.set( x, y );
   return this;
-}
+};
 
 drawable.prototype.setAxis = function ( x, y ) {
   this.axis.set( x, y );
@@ -56,8 +56,8 @@ drawable.prototype.draw = function ( from, size, sizeX, sizeY ) {
     this.to.set( sizeX, sizeY );
   }
   else {
-    this.from.set( from || this.position );
-    this.to.set( size || this.size );
+    this.from.copy( from || this.position );
+    this.to.copy( size || this.size );
   }
 
   var magnitude = this.to.len() / this.axis.len();
