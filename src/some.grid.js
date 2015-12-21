@@ -40,24 +40,24 @@ grid.prototype.generate = function ( width, count, bend ) {
 
   for( var i = 0; i < count; i++ ) {
     //boom new vert
-    this.fromVerts[ i ] = new some.vec2( 
+    this.fromVerts[ i ] = some.vec2.create( 
       this.horizontal * ( i % width ) , 
       this.vertical * Math.floor( i / width)
     );
 
-    this.toVerts[ i ] = new some.vec2( 1, 0 );
+    this.toVerts[ i ] = some.vec2.create( 1, 0 );
 
-    this.originVerts[ i ] = this.fromVerts[ i ].clone();
-    this.originHeadings[ i ] = this.toVerts[ i ].heading();
+    this.originVerts[ i ] = some.vec2.clone( this.fromVerts[ i ] );
+    this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
 
-    this.toVerts[ i ].normalize();
+    some.vec2.normalize( this.toVerts[ i ], this.toVerts[ i ] );
 
     if ( bend === 1 ) {
-      this.toVerts[ i ].mult( -1 );
+      some.vec2.mult( this.toVerts[ i ], -1, this.toVerts[ i ] );
     }
     else if ( bend === 2 ) {
-      this.fromVerts[ i + width ].copy( this.fromVerts[ i ] );
-      this.toVerts[ i + width ].copy( this.toVerts[ i ] );
+      some.vec2.copy( this.fromVerts[ i ], this.fromVerts[ i + width ] );
+      some.vec2.copy( this.toVerts[ i ], this.toVerts[ i + width ] );
     }
   }
 
@@ -67,7 +67,7 @@ grid.prototype.generate = function ( width, count, bend ) {
 grid.prototype.rotateVerts = function ( angle ) {
   angle = angle * some.toRadians;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    this.toVerts[ i ].rotate( this.originHeadings[ i ] + angle - this.toVerts[ i ].heading() );
+    some.vec2.rotate( this.toVerts[ i ], this.originHeadings[ i ] + angle - some.vec2.heading( this.toVerts[ i ] ), this.toVerts[ i ] );
   }
 
   return this;
@@ -76,10 +76,11 @@ grid.prototype.rotateVerts = function ( angle ) {
 grid.prototype.moveVerts = function ( movement ) {
   var angle;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = this.toVerts[ i ].heading( ) - Math.abs( movement.heading( ) );
-    movement.rotate( angle );
-    this.fromVerts[ i ] = this.originVerts[ i ].clone().add( movement );
-    movement.rotate( - angle );
+    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2( movement ) );
+    some.vec2.rotate( movement, angle, movement );
+    some.vec2.copy( this.originVerts[ i ], this.fromVerts[ i ] );
+    some.vec2.add( this.fromVerts[ i ], movement, this.fromVerts[ i ] );
+    some.vec2.rotate( movement, - angle, movement );
   }
 
   return this;
@@ -104,8 +105,8 @@ grid.prototype.next = function ( ) {
 
 grid.prototype.get = function ( ) {
   return {
-    from: this.fromVerts[ this.index ].clone( ),
-    to: this.toVerts[ this.index ].clone( )
+    from: this.fromVerts[ this.index ],
+    to: this.toVerts[ this.index ]
   };
 };
 

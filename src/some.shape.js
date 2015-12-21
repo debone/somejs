@@ -14,18 +14,18 @@ var shape = function ( world, shapeBeziers, shapeAxis ) {
     this.axis = shapeAxis;
   }
   else {
-    this.axis = new some.vec2( shapeAxis.shift(), shapeAxis.shift() );
+    this.axis = some.vec2.create( shapeAxis.shift(), shapeAxis.shift() );
   }
 
-  this.size.copy( this.axis );
+  some.vec2.copy( this.axis, this.size );
   this.shapeSize = Math.floor( this.shapeSize / 6 );
 
-  this.shape.push( new some.vec2( shapeBeziers.shift(), shapeBeziers.shift() ) );
+  this.shape.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );
 
   for ( var i = 0; i < this.shapeSize; i++ ) {
-    this.c1.push( new some.vec2( shapeBeziers.shift(), shapeBeziers.shift() ) );
-    this.c2.push( new some.vec2( shapeBeziers.shift(), shapeBeziers.shift() ) );
-    this.shape.push( new some.vec2( shapeBeziers.shift(), shapeBeziers.shift() ) );
+    this.c1.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );
+    this.c2.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );
+    this.shape.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );
   }
 
   return this;
@@ -35,12 +35,12 @@ shape.prototype = Object.create( some.drawable.prototype );
 
 shape.prototype.representation = function ( ) {
   this.world.beginShape( );
-    this.world.vertex( this.shape[ 0 ].x, this.shape[ 0 ].y );
+    this.world.vertex( this.shape[ 0 ][ 0 ], this.shape[ 0 ][ 1 ] );
     for ( var i = 0; i < this.shapeSize; i++ ) {
       this.world.bezierVertex(
-        this.c1[ i ].x, this.c1[ i ].y, 
-        this.c2[ i ].x, this.c2[ i ].y, 
-        this.shape[ i + 1 ].x, this.shape[ i + 1 ].y
+        this.c1[ i ][ 0 ], this.c1[ i ][ 1 ], 
+        this.c2[ i ][ 0 ], this.c2[ i ][ 1 ], 
+        this.shape[ i + 1 ][ 0 ], this.shape[ i + 1 ][ 1 ]
       );
     }
   this.world.endShape( );

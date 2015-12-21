@@ -32,34 +32,35 @@ spine.prototype = Object.create( some.drawable.prototype );
 spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
   
-  var temp = new some.vec2();
+  var temp = some.vec2.create();
 
   precision = precision || 70;
 
   for ( var i = 0; i < this.shapeSize; i++ ) {
-    temp.copy( this.shape[ i + 1 ] );
+    some.vec2.copy( this.shape[ i + 1 ], temp );
     this.shapeLength[ i ] = 0;
     this.shapePoints[ i ] = { };
     this.shapePoints[ i ].t = [ ];
     this.shapePoints[ i ].s = [ ];
 
-    step = 1 / ( Math.floor( ( temp.sub( this.shape[ i ] ).len() / 25 ) * precision ) + 1 );
+    some.vec2.sub( temp, this.shape[ i ], temp );
+    step = 1 / ( Math.floor( ( some.vec2.len( temp ) / 25 ) * precision ) + 1 );
 
-    lastX = this.shape[ i ].x;
-    lastY = this.shape[ i ].y;
+    lastX = this.shape[ i ][ 0 ];
+    lastY = this.shape[ i ][ 1 ];
     for ( var t = 0; t <= 1; t += step ) {
       x = this.world.bezierPoint( 
-        this.shape[ i ].x, 
-        this.c1[ i ].x, 
-        this.c2[ i ].x, 
-        this.shape[ i + 1 ].x, 
+        this.shape[ i ][ 0 ], 
+        this.c1[ i ][ 0 ], 
+        this.c2[ i ][ 0 ], 
+        this.shape[ i + 1 ][ 0 ], 
         t 
       );
       y = this.world.bezierPoint( 
-        this.shape[ i ].y, 
-        this.c1[ i ].y, 
-        this.c2[ i ].y, 
-        this.shape[ i + 1 ].y, 
+        this.shape[ i ][ 1 ], 
+        this.c1[ i ][ 1 ], 
+        this.c2[ i ][ 1 ], 
+        this.shape[ i + 1 ][ 1 ], 
         t 
       );
       //Calcular a distancia entre esse ponto e o ultimo
@@ -135,47 +136,47 @@ spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
     t = this._findClosestT( shapeStep, s );//lookup this.shapePoints;
 
     //boom new vert
-    this.fromVerts[ i ] = new some.vec2( 
+    this.fromVerts[ i ] = some.vec2.create( 
       this.world.bezierPoint( 
-        this.shape[ shapeStep ].x, 
-        this.c1[ shapeStep ].x, 
-        this.c2[ shapeStep ].x, 
-        this.shape[ shapeStep + 1 ].x,
+        this.shape[ shapeStep ][ 0 ], 
+        this.c1[ shapeStep ][ 0 ], 
+        this.c2[ shapeStep ][ 0 ], 
+        this.shape[ shapeStep + 1 ][ 0 ],
         t ), 
       this.world.bezierPoint( 
-        this.shape[ shapeStep ].y, 
-        this.c1[ shapeStep ].y, 
-        this.c2[ shapeStep ].y, 
-        this.shape[ shapeStep + 1 ].y, 
+        this.shape[ shapeStep ][ 1 ], 
+        this.c1[ shapeStep ][ 1 ], 
+        this.c2[ shapeStep ][ 1 ], 
+        this.shape[ shapeStep + 1 ][ 1 ], 
         t ) 
     );
 
-    this.toVerts[ i ] = new some.vec2(
+    this.toVerts[ i ] = some.vec2.create(
       this.world.bezierTangent( 
-        this.shape[ shapeStep ].x, 
-        this.c1[ shapeStep ].x, 
-        this.c2[ shapeStep ].x, 
-        this.shape[ shapeStep + 1 ].x,
+        this.shape[ shapeStep ][ 0 ], 
+        this.c1[ shapeStep ][ 0 ], 
+        this.c2[ shapeStep ][ 0 ], 
+        this.shape[ shapeStep + 1 ][ 0 ],
         t ), 
       this.world.bezierTangent( 
-        this.shape[ shapeStep ].y, 
-        this.c1[ shapeStep ].y, 
-        this.c2[ shapeStep ].y, 
-        this.shape[ shapeStep + 1 ].y, 
+        this.shape[ shapeStep ][ 1 ], 
+        this.c1[ shapeStep ][ 1 ], 
+        this.c2[ shapeStep ][ 1 ], 
+        this.shape[ shapeStep + 1 ][ 1 ], 
         t )
     );
 
-    this.originVerts[ i ] = this.fromVerts[ i ].clone();
-    this.originHeadings[ i ] = this.toVerts[ i ].heading();
+    this.originVerts[ i ] = some.vec2.clone( this.fromVerts[ i ] );
+    this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
 
-    this.toVerts[ i ].normalize();
+    some.vec2.normalize( this.toVerts[ i ], this.toVerts[ i ] );
 
     if ( bend === 1 ) {
-      this.toVerts[ i ].mult( -1 );
+      some.vec2.mult( this.toVerts[ i ], -1, this.toVerts[ i ] );
     }
     else if ( bend === 2 ) {
-      this.fromVerts[ i + steps ] = this.fromVerts[ i ].clone();
-      this.toVerts[ i + steps ] = this.toVerts[ i ].clone();
+      some.vec2.copy( this.fromVerts[ i ], this.fromVerts[ i + steps ] );
+      some.vec2.copy( this.toVerts[ i ], this.toVerts[ i + steps ] );
     }
   }
 
@@ -183,9 +184,9 @@ spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
 };
 
 spine.prototype.rotateVerts = function ( /*float*/ angle ) {
-  angle = this.world.radians( angle );
+  angle = angle * some.toRadians;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    this.toVerts[ i ].rotate( this.originHeadings[i] + angle - this.toVerts[ i ].heading() );
+    some.vec2.rotate( this.toVerts[ i ], this.originHeadings[ i ] + angle - some.vec2.heading( this.toVerts[ i ] ), this.toVerts[ i ] );
   }
 
   return this;
@@ -194,10 +195,11 @@ spine.prototype.rotateVerts = function ( /*float*/ angle ) {
 spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
   var angle;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = this.toVerts[ i ].heading() - Math.abs( movement.heading() );
-    movement.rotate( angle );
-    this.fromVerts[ i ] = this.originVerts[ i ].clone().add( movement );
-    movement.rotate( -angle );
+    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2( movement ) );
+    some.vec2.rotate( movement, angle, movement );
+    some.vec2.copy( this.originVerts[ i ], this.fromVerts[ i ] );
+    some.vec2.add( this.fromVerts[ i ], movement, this.fromVerts[ i ] );
+    some.vec2.rotate( movement, - angle, movement );
   }
 
   return this;
@@ -215,8 +217,8 @@ spine.prototype.next = function () {
 
 spine.prototype.get = function () {
   return {
-    from: this.fromVerts[ this.index ].clone( ),
-    to: this.toVerts[ this.index ].clone( )
+    from: this.fromVerts[ this.index ],
+    to: this.toVerts[ this.index ]
   };
 };
 
