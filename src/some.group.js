@@ -56,8 +56,8 @@ group.prototype.representation = function ( ) {
 
     if ( this.layout.next() ) { 
       p = this.layout.get();
-      n.drawable.setPosition( p.from.x, p.from.y );
-      n.drawable.setSize( p.to.x, p.to.y );
+      n.drawable.setPosition( p.from[ 0 ], p.from[ 1 ] );
+      n.drawable.setSize( p.to[ 0 ], p.to[ 1 ] );
     }
 
     if ( this.colorsPool.next() ) {
