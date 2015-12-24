@@ -7,6 +7,7 @@ require( './src/some.noise' );
 require( './src/some.vec2' );
 
 require( './src/some.drawable' );
+require( './src/some.canvas' );
 require( './src/some.shape' );
 
 require( './src/some.grid' );
