@@ -1,8 +1,6 @@
 'use strict';
 
-var some = function ( ) {
-
-};
+var some = function ( ) { };
 
 some.Array = ( typeof Float32Array !== 'undefined' ) ? Float32Array : Array;
 
