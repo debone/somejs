@@ -223,6 +223,5 @@ random.prototype.gamma = function( a ) {
     }
 };
 
-
 some.random = random;
 module.exports = some;
