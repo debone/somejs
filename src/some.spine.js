@@ -27,7 +27,7 @@ var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
   return this;
 };
 
-spine.prototype = Object.create( some.drawable.prototype );
+spine.prototype = Object.create( some.shape.prototype );
 
 spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
@@ -195,7 +195,7 @@ spine.prototype.rotateVerts = function ( /*float*/ angle ) {
 spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
   var angle;
   for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2( movement ) );
+    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2.heading( movement ) );
     some.vec2.rotate( movement, angle, movement );
     some.vec2.copy( this.originVerts[ i ], this.fromVerts[ i ] );
     some.vec2.add( this.fromVerts[ i ], movement, this.fromVerts[ i ] );
