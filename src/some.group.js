@@ -20,11 +20,19 @@ var group = function ( world, options ) {
   if ( typeof options.layout !== "undefined" ) {
     this.layout = options.layout;
   }
-  if ( typeof options.colorsPool !== "undefined" ) {
-    this.colorsPool = options.colorsPool;
+  
+  if ( typeof options.colorsPool !== "undefined" ||
+       typeof options.colorspool !== "undefined" ||
+       typeof options.colors !== "undefined"
+    ) {
+    this.colorsPool = options.colorsPool || options.colorspool || options.colors;
   }
-  if ( typeof options.drawablesPool !== "undefined" ) {
-    this.drawablesPool = options.drawablesPool;
+
+  if ( typeof options.drawablesPool !== "undefined" ||
+       typeof options.drawablespool !== "undefined" ||
+       typeof options.drawables !== "undefined"
+    ) {
+    this.drawablesPool = options.drawablesPool || options.drawablespool || options.drawables;
   }
 
   return this; 
