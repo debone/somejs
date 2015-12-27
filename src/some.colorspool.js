@@ -53,10 +53,22 @@ colorsPool.prototype.next = function ( ) {
 };
 
 colorsPool.prototype.get = function ( ) {
-  return { 
-    stroke: this.colors[ this.index + 1 ],
-    fill: this.colors[ this.index ]
-  };
+  return this.colors[ this.index ];
+};
+
+colorsPool.prototype.fill = function ( ) {
+  this.next();
+  this.world.fill( this.get() );
+};
+
+colorsPool.prototype.stroke = function ( ) {
+  this.next();
+  this.world.stroke( this.get() );
+};
+
+colorsPool.prototype.fillAndStroke = function ( ) {
+  this.fill();
+  this.stroke();
 };
 
 colorsPool.prototype.reset = function ( ) {

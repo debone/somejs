@@ -62,16 +62,18 @@ group.prototype.representation = function ( ) {
 
     if ( this.colorsPool.next() ) {
       c = this.colorsPool.get();
-
-      if ( c.fill ) {
-        this.world.fill( c.fill );
+      if ( c ) {
+        this.world.fill( c );
       }
       else {
         this.world.noFill();
       }
+    }
 
-      if ( c.stroke ) {
-        this.world.stroke( c.stroke );
+    if ( this.colorsPool.next() ) {
+      c = this.colorsPool.get();
+      if ( c ) {
+        this.world.stroke( c );
       }
       else {
         this.world.noStroke();
