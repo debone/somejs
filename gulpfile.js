@@ -19,7 +19,7 @@ gulp.task( 'default', function ( ) {
     .pipe( uglify({
         compress: {
             global_defs: {
-                DEBUG: false
+              DEBUG: false
             }
         }
     }) )
