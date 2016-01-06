@@ -19,6 +19,8 @@ require( './src/some.brush' );
 require( './src/some.grid' );
 require( './src/some.spine' );
 
+require( './src/some.iterator' );
+
 require( './src/some.colorspool' );
 require( './src/some.drawablespool' );
 

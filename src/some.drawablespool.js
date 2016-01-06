@@ -3,6 +3,7 @@
 var some = require( './some.core' );
 
 var drawablesPool = function ( world, options ) {
+  some.iterator.call( this, world, true );
   this.world = world;
 
   this.drawables = [ ];
@@ -10,13 +11,7 @@ var drawablesPool = function ( world, options ) {
 
   this.drawFunction = false;
 
-  this.index = -1;
-
   options = options || { };
-
-  if ( options.select ) {
-    // How is the pool being draw?
-  }
 
   if ( options.draw ) { 
     // Unique draw function
@@ -24,8 +19,14 @@ var drawablesPool = function ( world, options ) {
   }
 };
 
+drawablesPool.prototype = Object.create( some.iterator.prototype );
+
 drawablesPool.prototype.add = function ( drawable, count, drawableFunction ) {
   count = count || 1;
+
+  // TODO Move this to iterator ( drawablesPool.prototype.insert & iterator.prototype.add )
+  this.length += count;
+  
   if ( drawable instanceof some.drawable ) {
     while ( count -- ) {
       this.drawables[ this.drawables.length ] = drawable;
@@ -37,6 +38,9 @@ drawablesPool.prototype.add = function ( drawable, count, drawableFunction ) {
 };
 
 drawablesPool.prototype.remove = function ( index ) {
+  // TODO Same as add
+  this.length--;
+
   if ( index > -1 ) {
     this.drawables = this.drawables.splice( index, 1 );
     this.drawablesFunctions = this.drawablesFunctions.splice( index, 1 );
@@ -49,28 +53,17 @@ drawablesPool.prototype.clear = function ( ) {
   this.drawables = [ ];
   this.drawablesFunctions = [ ];
 
+  this.length = 0;
+  this.reset();
+
   return this;
 };
 
-drawablesPool.prototype.next = function ( ) {
-  if ( this.index + 1 !== this.drawables.length ) {
-    this.index++;
-    return true;
-  }
-  this.index = -1;
-  return false;
-};
-
-drawablesPool.prototype.get = function ( ) {
-  return { 
-    drawable: this.drawables[ this.index ],
-    fn: ( this.drawFunction ) ? this.drawFunction : this.drawablesFunctions[ this.index ]
+drawablesPool.prototype.retrieve = function ( index ) { 
+  return {
+    drawable: this.drawables[ index ],
+    fn: ( this.drawFunction ) ? this.drawFunction : this.drawablesFunctions[ index ]
   };
-};
-
-drawablesPool.prototype.reset = function ( ) {
-  this.index = -1;
-  return this;
 };
 
 some.drawablesPool = drawablesPool;

@@ -1,6 +1,6 @@
 {
   "name": "somejs",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Generative Design lib",
   "main": "app.js",
   "directories": {

@@ -3,6 +3,7 @@
 var some = require( './some.core' );
 
 var grid = function ( world, width, count, options ) {
+  some.iterator.call( this, world );
   this.world = world;
 
   this.fromVerts = [ ];
@@ -26,7 +27,7 @@ var grid = function ( world, width, count, options ) {
   return this;
 };
 
-grid.prototype = Object.create( some.drawable.prototype );
+grid.prototype = Object.create( some.iterator.prototype );
 
 grid.prototype.generate = function ( width, count, bend ) {
   var t, s;
@@ -37,6 +38,8 @@ grid.prototype.generate = function ( width, count, bend ) {
   //Make move absolute
   this.originVerts = [];
   this.originHeadings = [];
+
+  this.length = count;
 
   for( var i = 0; i < count; i++ ) {
     //boom new vert
@@ -93,26 +96,11 @@ grid.prototype.setMargin = function ( horizontal, vertical, bend ) {
   this.generate( this.width, this.count, bend || 0 );
 };
 
-grid.prototype.next = function ( ) {
-  if ( this.index + 1 !== this.fromVerts.length ) {
-    this.index++;
-  }
-  else {
-    this.index = 0;
-  }
-  return true;
-};
-
-grid.prototype.get = function ( ) {
+grid.prototype.retrieve = function ( index ) {
   return {
-    from: this.fromVerts[ this.index ],
-    to: this.toVerts[ this.index ]
+    from: this.fromVerts[ index ],
+    to: this.toVerts[ index ]
   };
-};
-
-grid.prototype.reset = function ( ) {
-  this.index = -1;
-  return this;
 };
 
 some.grid = grid;

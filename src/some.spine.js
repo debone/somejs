@@ -3,7 +3,7 @@
 var some = require( './some.core' );
 
 var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
-  some.shape.call( this, world, shapeBeziers, shapeAxis );
+  some.iterator.call( this, world );
 
   this.drawables = [ ];
   this.fromVerts = [ ];
@@ -27,7 +27,7 @@ var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
   return this;
 };
 
-spine.prototype = Object.create( some.shape.prototype );
+spine.prototype = Object.create( some.iterator.prototype );
 
 spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
@@ -123,6 +123,8 @@ spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
   this.originVerts = [];
   this.originHeadings = [];
 
+  this.length = steps;
+
   for( var i = 0; i < steps; i++, shapeProgress += step ) {
     if ( ( shapeProgress - progress ) > this.shapeLength[ shapeStep ] ) {
       progress += this.shapeLength[ shapeStep ];
@@ -205,26 +207,11 @@ spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
   return this;
 };
 
-spine.prototype.next = function () {
-  if ( this.index + 1 !== this.fromVerts.length ) {
-    this.index++;
-  }
-  else {
-    this.index = 0;
-  }
-  return true;
-};
-
-spine.prototype.get = function () {
+spine.prototype.retrieve = function ( index ) {
   return {
-    from: this.fromVerts[ this.index ],
-    to: this.toVerts[ this.index ]
+    from: this.fromVerts[ index ],
+    to: this.toVerts[ index ]
   };
-};
-
-spine.prototype.reset = function ( ) {
-  this.index = -1;
-  return this;
 };
 
 some.spine = spine;

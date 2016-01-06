@@ -59,14 +59,12 @@ group.prototype.representation = function ( ) {
   var n, c, p;
   this.layout.reset();
   //this.colorsPool.reset();
-  while ( this.drawablesPool.next() ) {
-    n = this.drawablesPool.get();
-
-    if ( this.layout.next() ) { 
-      p = this.layout.get();
-      n.drawable.setPosition( p.from[ 0 ], p.from[ 1 ] );
-      n.drawable.setSize( p.to[ 0 ], p.to[ 1 ] );
-    }
+  while ( this.layout.next() ) {
+    n = this.layout.get();
+    p = this.drawablesPool.get();
+    
+    p.drawable.setPosition( n.from[ 0 ], n.from[ 1 ] );
+    p.drawable.setSize( n.to[ 0 ], n.to[ 1 ] );
 
     if ( this.colorsPool.next() ) {
       c = this.colorsPool.get();
@@ -88,8 +86,8 @@ group.prototype.representation = function ( ) {
       }
     }
 
-    if ( ! n.fn( this.world, n.drawable ) ) {
-      n.drawable.draw();
+    if ( ! p.fn( this.world, p.drawable ) ) {
+      p.drawable.draw();
     }
   }
 };
