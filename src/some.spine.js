@@ -4,6 +4,7 @@ var some = require( './some.core' );
 
 var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
   some.iterator.call( this, world );
+  some.shape.call( this, world, shapeBeziers, shapeAxis );
 
   this.drawables = [ ];
   this.fromVerts = [ ];

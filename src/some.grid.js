@@ -4,7 +4,6 @@ var some = require( './some.core' );
 
 var grid = function ( world, width, count, options ) {
   some.iterator.call( this, world );
-  this.world = world;
 
   this.fromVerts = [ ];
   this.toVerts = [ ];
@@ -94,6 +93,8 @@ grid.prototype.setMargin = function ( horizontal, vertical, bend ) {
   this.vertical = vertical || horizontal || this.vertical;
 
   this.generate( this.width, this.count, bend || 0 );
+
+  return this;
 };
 
 grid.prototype.retrieve = function ( index ) {

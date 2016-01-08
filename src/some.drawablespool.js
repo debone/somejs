@@ -4,7 +4,6 @@ var some = require( './some.core' );
 
 var drawablesPool = function ( world, options ) {
   some.iterator.call( this, world, true );
-  this.world = world;
 
   this.drawables = [ ];
   this.drawablesFunctions = [ ];

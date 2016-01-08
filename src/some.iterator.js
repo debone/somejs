@@ -3,8 +3,10 @@
 var some = require( './some.core' );
 
 var iterator = function ( world, loopable ) {
+  this.world = world;
   this.length = 0;
   this.index = -1;
+  this.count = 0;
   this.loopable = loopable || false;
 
   this.selector = some.ORDER; //ordened!!
@@ -21,6 +23,10 @@ iterator.prototype.setSelector = function ( selector, seed ) {
     // ORDER has no instance
     this.selectorInstance = undefined;
   }
+
+  this.selector = selector;
+
+  return this;
 };
 
 iterator.prototype.getValue = function ( ) {
@@ -45,7 +51,7 @@ iterator.prototype.getValue = function ( ) {
       value = this.length * this.selectorInstance.gamma( 0.99 );
       break;
     case some.NOISE:
-      value = this.length * this.selectorInstance.get( this.index );
+      value = this.length * this.selectorInstance.get( this.count, 1 );
       break;
   }
 
@@ -64,8 +70,9 @@ iterator.prototype.next = function ( ) {
 // -> get one value between zero and length
 // -> return iterable 
 iterator.prototype.get = function ( ) {
-  if ( this.next( ) ) {
+  if ( this.next( ) || this.loopable ) {
     this.index = ( ( this.index + 1 < this.length ) || !this.loopable ) ? this.index + 1 : 0;
+    this.count++;
     return this.retrieve( this.getValue( ) );
   }
 

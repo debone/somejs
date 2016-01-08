@@ -3,24 +3,21 @@
 var some = require( './some.core' );
 
 var colorsPool = function ( world, options ) {
-  this.world = world;
+  some.iterator.call( this, world, true );
 
   this.colors = [ ];
 
-  this.index = -1;
-
   options = options || { };
-
-  if ( typeof options.select !== "undefined" ) {
-    // How is the pool being draw?
-  }
 };
+
+colorsPool.prototype = Object.create( some.iterator.prototype );
 
 colorsPool.prototype.add = function ( color, count ) {
   count = count || 1;
   // TODO some.color
   if ( color instanceof p5.Color ) {
     while ( count -- ) {
+      this.length++;
       this.colors[ this.colors.length ] = color;
     }
   }
@@ -29,6 +26,7 @@ colorsPool.prototype.add = function ( color, count ) {
 };
 
 colorsPool.prototype.remove = function ( index ) {
+  this.length--;
   if ( index > -1 ) {
     this.colors = this.colors.splice( index, 1 );
   }
@@ -39,24 +37,17 @@ colorsPool.prototype.remove = function ( index ) {
 colorsPool.prototype.clear = function ( ) {
   this.colors = [ ];
 
+  this.length = 0;
+  this.reset();
+
   return this;
 };
 
-colorsPool.prototype.next = function ( ) {
-  if ( this.index + 1 !== this.colors.length ) {
-    this.index++;
-  }
-  else {
-    this.index = 0;
-  }
-  return true;
+colorsPool.prototype.retrieve = function ( index ) {
+  return this.colors[ index ];
 };
 
-colorsPool.prototype.get = function ( ) {
-  return this.colors[ this.index ];
-};
-
-colorsPool.prototype.fill = function ( ) {
+/*colorsPool.prototype.fill = function ( ) {
   this.next();
   this.world.fill( this.get() );
 };
@@ -69,12 +60,7 @@ colorsPool.prototype.stroke = function ( ) {
 colorsPool.prototype.fillAndStroke = function ( ) {
   this.fill();
   this.stroke();
-};
-
-colorsPool.prototype.reset = function ( ) {
-  this.index = -1;
-  return this;
-};
+};*/
 
 some.colorsPool = colorsPool;
 

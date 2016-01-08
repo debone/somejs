@@ -10,16 +10,14 @@ require( './src/some.random' );
 require( './src/some.noise' );
 require( './src/some.vec2' );
 
+require( './src/some.iterator' );
+
 require( './src/some.drawable' );
 require( './src/some.canvas' );
 require( './src/some.shape' );
 
-require( './src/some.brush' );
-
 require( './src/some.grid' );
 require( './src/some.spine' );
-
-require( './src/some.iterator' );
 
 require( './src/some.colorspool' );
 require( './src/some.drawablespool' );

@@ -66,25 +66,8 @@ group.prototype.representation = function ( ) {
     p.drawable.setPosition( n.from[ 0 ], n.from[ 1 ] );
     p.drawable.setSize( n.to[ 0 ], n.to[ 1 ] );
 
-    if ( this.colorsPool.next() ) {
-      c = this.colorsPool.get();
-      if ( c ) {
-        this.world.fill( c );
-      }
-      else {
-        this.world.noFill();
-      }
-    }
-
-    if ( this.colorsPool.next() ) {
-      c = this.colorsPool.get();
-      if ( c ) {
-        this.world.stroke( c );
-      }
-      else {
-        this.world.noStroke();
-      }
-    }
+    this.world.fill( this.colorsPool.get() );
+    this.world.stroke( this.colorsPool.get() );
 
     if ( ! p.fn( this.world, p.drawable ) ) {
       p.drawable.draw();
