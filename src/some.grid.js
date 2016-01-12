@@ -2,49 +2,40 @@
 
 var some = require( './some.core' );
 
-var grid = function ( world, width, count, options ) {
-  some.iterator.call( this, world );
-
-  this.fromVerts = [ ];
-  this.toVerts = [ ];
-
-  this.index = -1;
-
-  this.originVerts = [ ];
-  this.originHeadings = [ ];
+var grid = function ( world, width, height, marginX, marginY ) {
+  some.layout.call( this, world );
 
   this.width = width;
-  this.count = count;
 
-  options = options || { };
+  this.horizontal = marginX || 1;
+  this.vertical = marginY || marginX || 1;
 
-  this.horizontal = options.horizontal || 1;
-  this.vertical = options.vertical || 1;
-
-  this.generate( width, count, options.bend || 0 );
+  this.setSize( width, height );
 
   return this;
 };
 
-grid.prototype = Object.create( some.iterator.prototype );
+grid.prototype = Object.create( some.layout.prototype );
 
-grid.prototype.generate = function ( width, count, bend ) {
+grid.prototype.setSize = function ( w, h ) {
+  w = w || 1;
+  h = h || w;
+  this.steps = w * h;
+  this.width = w;
+}
+
+grid.prototype.generate = function ( ) {
   var t, s;
 
-  this.fromVerts = [];
-  this.toVerts = [];
+  this.initArrays( this.steps );
 
-  //Make move absolute
-  this.originVerts = [];
-  this.originHeadings = [];
+  this.length = this.steps;
 
-  this.length = count;
-
-  for( var i = 0; i < count; i++ ) {
+  for( var i = 0; i < this.steps; i++ ) {
     //boom new vert
-    this.fromVerts[ i ] = some.vec2.create( 
-      this.horizontal * ( i % width ) , 
-      this.vertical * Math.floor( i / width)
+    this.fromVerts[ i ] = some.vec2.create(
+      this.horizontal * ( i % this.width ) , 
+      this.vertical * Math.floor( i / this.width)
     );
 
     this.toVerts[ i ] = some.vec2.create( 1, 0 );
@@ -53,55 +44,18 @@ grid.prototype.generate = function ( width, count, bend ) {
     this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
 
     some.vec2.normalize( this.toVerts[ i ], this.toVerts[ i ] );
-
-    if ( bend === 1 ) {
-      some.vec2.mult( this.toVerts[ i ], -1, this.toVerts[ i ] );
-    }
-    else if ( bend === 2 ) {
-      some.vec2.copy( this.fromVerts[ i ], this.fromVerts[ i + width ] );
-      some.vec2.copy( this.toVerts[ i ], this.toVerts[ i + width ] );
-    }
   }
 
   return this;
 };
 
-grid.prototype.rotateVerts = function ( angle ) {
-  angle = angle * some.toRadians;
-  for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    some.vec2.rotate( this.toVerts[ i ], this.originHeadings[ i ] + angle - some.vec2.heading( this.toVerts[ i ] ), this.toVerts[ i ] );
-  }
-
-  return this;
-};
-
-grid.prototype.moveVerts = function ( movement ) {
-  var angle;
-  for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2.heading( movement ) );
-    some.vec2.rotate( movement, angle, movement );
-    some.vec2.copy( this.originVerts[ i ], this.fromVerts[ i ] );
-    some.vec2.add( this.fromVerts[ i ], movement, this.fromVerts[ i ] );
-    some.vec2.rotate( movement, - angle, movement );
-  }
-
-  return this;
-};
-
-grid.prototype.setMargin = function ( horizontal, vertical, bend ) {
+grid.prototype.setMargin = function ( horizontal, vertical ) {
   this.horizontal = horizontal || this.horizontal;
   this.vertical = vertical || horizontal || this.vertical;
 
-  this.generate( this.width, this.count, bend || 0 );
+  this.generate( );
 
   return this;
-};
-
-grid.prototype.retrieve = function ( index ) {
-  return {
-    from: this.fromVerts[ index ],
-    to: this.toVerts[ index ]
-  };
 };
 
 some.grid = grid;

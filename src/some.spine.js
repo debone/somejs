@@ -2,33 +2,19 @@
 
 var some = require( './some.core' );
 
-var spine = function ( world, shapeBeziers, shapeAxis, steps, bend  ) {
-  some.iterator.call( this, world );
+var spine = function ( world, shapeBeziers, shapeAxis, steps ) {
+  some.layout.call( this, world );
   some.shape.call( this, world, shapeBeziers, shapeAxis );
-
-  this.drawables = [ ];
-  this.fromVerts = [ ];
-  this.toVerts = [ ];
-
-  this.index = -1;
-
-  this.originVerts = [ ];
 
   this.shapeLength = [ ];
   this.shapePoints = [ ];
 
   this.shapeTotalLength = 0.0;
 
-  this.init();
-
-  if ( typeof steps !== "undefined" ) {
-    this.generate( steps, bend || 0 );
-  }
-
   return this;
 };
 
-spine.prototype = Object.create( some.iterator.prototype );
+spine.prototype = Object.create( some.layout.prototype );
 
 spine.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
@@ -81,7 +67,7 @@ spine.prototype.init = function( precision ) {
   return this;
 };
 
-spine.prototype._findClosestT = function ( /* int */ shape, /* int */ s ) {
+spine.prototype._findClosestT = function ( shape, s ) {
   var points = this.shapePoints[ shape ];
   var i, l, curr;
 
@@ -110,20 +96,14 @@ spine.prototype._findClosestT = function ( /* int */ shape, /* int */ s ) {
   }
 };
 
-spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
+spine.prototype.generate = function ( steps ) {
   var progress = 0, 
       shapeProgress = 0.001,
       shapeStep = 0,
       step = this.shapeTotalLength / steps,
       t, s;
 
-  this.fromVerts = [];
-  this.toVerts = [];
-
-  //Make move absolute
-  this.originVerts = [];
-  this.originHeadings = [];
-
+  this.initArrays( steps );
   this.length = steps;
 
   for( var i = 0; i < steps; i++, shapeProgress += step ) {
@@ -184,35 +164,6 @@ spine.prototype.generate = function ( /* int */ steps, /* int */ bend ) {
   }
 
   return this;
-};
-
-spine.prototype.rotateVerts = function ( /*float*/ angle ) {
-  angle = angle * some.toRadians;
-  for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    some.vec2.rotate( this.toVerts[ i ], this.originHeadings[ i ] + angle - some.vec2.heading( this.toVerts[ i ] ), this.toVerts[ i ] );
-  }
-
-  return this;
-};
-
-spine.prototype.moveVerts = function ( /*PVector*/ movement ) {
-  var angle;
-  for ( var i = 0, l = this.toVerts.length; i < l; i++ ) {
-    angle = some.vec2.heading( this.toVerts[ i ] ) - Math.abs( some.vec2.heading( movement ) );
-    some.vec2.rotate( movement, angle, movement );
-    some.vec2.copy( this.originVerts[ i ], this.fromVerts[ i ] );
-    some.vec2.add( this.fromVerts[ i ], movement, this.fromVerts[ i ] );
-    some.vec2.rotate( movement, - angle, movement );
-  }
-
-  return this;
-};
-
-spine.prototype.retrieve = function ( index ) {
-  return {
-    from: this.fromVerts[ index ],
-    to: this.toVerts[ index ]
-  };
 };
 
 some.spine = spine;
