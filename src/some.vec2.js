@@ -304,8 +304,8 @@ vec2.rotate = function ( a, angle, out ) {
   var heading = vec2.heading( a ) + angle;
   var len = vec2.len( a );
 
-  out[ 0 ] = Math.cos( heading ) * len;
-  out[ 1 ] = Math.sin( heading ) * len;
+  out[ 0 ] = Math.sin( heading ) * len;
+  out[ 1 ] = Math.cos( heading ) * len;
 
   return this;
 };

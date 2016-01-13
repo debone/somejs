@@ -6,7 +6,7 @@ some.Array = ( typeof Float32Array !== 'undefined' ) ? Float32Array : Array;
 
 // Conversion Multiplications
 some.toRadians = Math.PI / 180;
-some.toDegrees = 1 / some.toDegrees;
+some.toDegrees = 1 / some.toRadians;
 
 // CONSTANTS 
 // grids

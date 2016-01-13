@@ -21,6 +21,12 @@ colorsPool.prototype.add = function ( color, count ) {
       this.colors[ this.colors.length ] = color;
     }
   }
+  else {
+    while ( count -- ) {
+      this.length++;
+      this.colors[ this.colors.length ] = this.world.color( color );
+    }
+  }
 
   return this;
 };
