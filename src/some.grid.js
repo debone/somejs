@@ -3,14 +3,13 @@
 var some = require( './some.core' );
 
 var grid = function ( world, width, height, marginX, marginY ) {
-  some.layout.call( this, world );
-
-  this.width = width;
+  some.layout.call( this, world, true );
 
   this.horizontal = marginX || 1;
   this.vertical = marginY || marginX || 1;
 
   this.setSize( width, height );
+  this.generate();
 
   return this;
 };
@@ -22,14 +21,12 @@ grid.prototype.setSize = function ( w, h ) {
   h = h || w;
   this.steps = w * h;
   this.width = w;
-}
+};
 
-grid.prototype.generate = function ( ) {
+grid.prototype.generate = function ( steps ) {
   var t, s;
 
-  this.initArrays( this.steps );
-
-  this.length = this.steps;
+  this.initArrays( steps || this.steps );
 
   for( var i = 0; i < this.steps; i++ ) {
     //boom new vert

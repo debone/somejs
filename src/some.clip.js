@@ -2,24 +2,17 @@
 
 var some = require( './some.core' );
 
-var spine = function ( world, shapeBeziers, shapeAxis, steps, precision ) {
+var clip = function ( world, clip, steps, precision ) {
   some.layout.call( this, world, true );
-  some.shape.call( this, world, shapeBeziers, shapeAxis );
 
-  this.shapeLength = [ ];
-  this.shapePoints = [ ];
-
-  this.shapeTotalLength = 0.0;
-
-  this.init( precision );
   this.generate( steps );
 
   return this;
 };
 
-spine.prototype = Object.create( some.layout.prototype );
+clip.prototype = Object.create( some.layout.prototype );
 
-spine.prototype.init = function( precision ) {
+clip.prototype.init = function( precision ) {
   var step, x, y, lastX, lastY, dist;
   
   var temp = some.vec2.create();
@@ -70,7 +63,7 @@ spine.prototype.init = function( precision ) {
   return this;
 };
 
-spine.prototype._findClosestT = function ( shape, s ) {
+clip.prototype._findClosestT = function ( shape, s ) {
   var points = this.shapePoints[ shape ];
   var i, l, curr;
 
@@ -99,7 +92,7 @@ spine.prototype._findClosestT = function ( shape, s ) {
   }
 };
 
-spine.prototype.generate = function ( steps ) {
+clip.prototype.generate = function ( steps ) {
   var progress = 0, 
       shapeProgress = 0.001,
       shapeStep = 0,
@@ -161,6 +154,6 @@ spine.prototype.generate = function ( steps ) {
   return this;
 };
 
-some.spine = spine;
+some.clip = clip;
 
 module.exports = some;
