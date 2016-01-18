@@ -39,8 +39,6 @@ grid.prototype.generate = function ( steps ) {
 
     this.originVerts[ i ] = some.vec2.clone( this.fromVerts[ i ] );
     this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
-
-    some.vec2.normalize( this.toVerts[ i ], this.toVerts[ i ] );
   }
 
   return this;
