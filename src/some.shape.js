@@ -11,13 +11,12 @@ var shape = function ( world, shapeBeziers, shapeAxis ) {
   this.shapeSize = shapeBeziers.length;
 
   if ( shapeAxis instanceof some.vec2 ) {
-    this.axis = shapeAxis;
+    this.size = shapeAxis;
   }
   else {
-    this.axis = some.vec2.create( shapeAxis.shift(), shapeAxis.shift() );
+    this.size = some.vec2.create( shapeAxis.shift(), shapeAxis.shift() );
   }
 
-  some.vec2.copy( this.axis, this.size );
   this.shapeSize = Math.floor( this.shapeSize / 6 );
 
   this.shape.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );

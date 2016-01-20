@@ -18,26 +18,29 @@ var clip = function ( world, clip, steps, precision ) {
 clip.prototype = Object.create( some.layout.prototype );
 
 clip.prototype.generate = function ( steps ) {
-  var t, s;
-
   this.initArrays( steps || this.steps );
   
+  var x, y, w = this.image.width, h = this.image.height, g, count = 0;
   // randomly chooses a position
   // test that position ( ran.uniform() < alpha )
   // if true, save position
   // if false, tries again and i--
   // this is wrong, because it is minimum o(n) and max o(n^n)
+  while( count !== this.steps ) {
+    x = this.ran.random( w );
+    y = this.ran.random( h );
 
-  for( var i = 0; i < this.steps; i++ ) {
-    this.fromVerts[ i ] = some.vec2.create(
-      this.ran.random( this.image.width ), 
-      this.ran.random( this.image.height )
-    );
+    g = this.image.get( x, y );
 
-    this.toVerts[ i ] = some.vec2.create( 1, 0 );
+    if( this.ran.random( 255 ) < g[ 3 ] ) {
+      this.fromVerts[ count ] = some.vec2.create( x, y );
 
-    this.originVerts[ i ] = some.vec2.clone( this.fromVerts[ i ] );
-    this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
+      this.toVerts[ count ] = some.vec2.create( 0, 1 );
+
+      this.originVerts[ count ] = some.vec2.clone( this.fromVerts[ count ] );
+      this.originHeadings[ count ] = some.vec2.heading( this.toVerts[ count ] );
+      count++;
+    }
   }
 
   return this;
