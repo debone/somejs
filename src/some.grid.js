@@ -35,7 +35,7 @@ grid.prototype.generate = function ( steps ) {
       this.vertical * Math.floor( i / this.width)
     );
 
-    this.toVerts[ i ] = some.vec2.create( 1, 0 );
+    this.toVerts[ i ] = some.vec2.create( 0, 1 );
 
     this.originVerts[ i ] = some.vec2.clone( this.fromVerts[ i ] );
     this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );

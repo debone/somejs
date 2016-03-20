@@ -20,6 +20,7 @@ require( './src/some.shape' );
 require( './src/some.layout' );
 require( './src/some.grid' );
 require( './src/some.spine' );
+require( './src/some.clip' );
 
 require( './src/some.colorspool' );
 require( './src/some.drawablespool' );

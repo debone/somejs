@@ -6,17 +6,15 @@ var drawable = function ( world ) {
   this.world = world;
 
   this.position = some.vec2.create();
-  this.axis = some.vec2.create( 0, 1 );
-  this.anchor = some.vec2.create( 0, 0 );
 
-  this.size = some.vec2.create( 1, 1 );
-  this.to = this.size;
-  this.isToDefined = false;
+  this.sizeOriginal = some.vec2.create();
+  this.sizeValue = this.sizeOriginal;
+  this.sizeChange = false;
 
-  this.originalAxis = some.vec2.create( 0, 1 );
-  this.axis = some.vec2.create( 0, 0 );
+  this.axisOriginal = some.vec2.create( 0, 1 );
+  this.axisValue = some.vec2.create( 0, 1 );
 
-  this.originalAnchor = some.vec2.create( 0, 0 );
+  this.anchorValue = some.vec2.create( 0, 0 );
 
   this.tempPos = some.vec2.create();
   this.tempAxis = some.vec2.create();
@@ -28,34 +26,58 @@ drawable.prototype.setPosition = function ( x, y ) {
 };
 
 drawable.prototype.setSize = function ( x, y ) {
-  if( !this.isToDefined ) {
-    this.isToDefined = true;
-    this.to = some.vec2.create();
+  if( ! this.sizeChange ) {
+    this.sizeValue = some.vec2.clone(this.sizeOriginal);
+    this.sizeChange = true;
   }
-  some.vec2.set( x, y, this.to );
+  some.vec2.set( x, y, this.sizeValue );
   return this;
 };
 
 drawable.prototype.size = function ( x, y ) {
-  some.vec2.set( x, y || x, this.size );
+  if( ! this.sizeChange ) {
+    this.sizeValue = some.vec2.clone(this.sizeOriginal);
+    this.sizeChange = true;
+  }
+  some.vec2.add( this.sizeValue, [ x, y ], this.sizeValue );
+  return this;
+};
+
+drawable.prototype.scale = function ( scale ) {
+  some.vec2.mult( this.sizeValue, scale, this.sizeValue );
   return this;
 };
 
 drawable.prototype.setAnchor = function ( x, y ) {
-  some.vec2.set( x, y, this.anchor );
+  some.vec2.set( x, y, this.anchorValue );
+  return this;
+};
+
+drawable.prototype.anchor = function( x, y ) {
+  some.vec2.add( this.anchorValue, [ x , y ], this.anchorValue );
   return this;
 };
 
 drawable.prototype.setAxis = function ( x, y ) {
-  some.vec2.set( x, y, this.axis );
-  some.vec2.set( x, y, this.originalAxis );
+  some.vec2.set( x, y, this.axisValue );
   return this;
 };
 
+drawable.prototype.axis = function ( x, y ) {
+  some.vec2.add( this.axisValue, [ x , y ], this.axisValue );
+  return this;
+}; 
+
 drawable.prototype.setRotation = function ( angle ) {
   angle = angle * some.toRadians;
-  some.vec2.copy( this.originalAxis, this.axis );
-  some.vec2.rotate( this.axis, angle, this.axis );
+  some.vec2.copy( this.axisOriginal, this.axisValue );
+  some.vec2.rotate( this.axisValue, -angle, this.axisValue );
+  return this;
+};
+
+drawable.prototype.rotate = function ( angle ) {
+  angle = angle * some.toRadians;
+  some.vec2.rotate( this.axisValue, -angle, this.axisValue );
   return this;
 };
 
@@ -70,32 +92,28 @@ drawable.prototype.draw = function ( from, axis, axisX, axisY ) {
     some.vec2.copy( axis || [ 0,0 ], this.tempAxis );
   }
 
-  // Angle reference starts in -90, not 0
-  // Math.atan2( 0, -0 ) === pi
-  some.vec2.set( this.tempAxis[ 0 ], -this.tempAxis[ 1 ] || 0 , this.tempAxis );
-
-  var magnitude = some.vec2.len( this.to ) / some.vec2.len( this.size );
+  var magnitude = some.vec2.len( this.sizeValue ) / some.vec2.len( this.sizeOriginal );
 
   // Center anchor
-  // this.tempPos.add( this.anchor ); 
+  // this.tempPos.add( this.anchorValue ); 
 
   this.world.push();
     this.world.translate( this.tempPos[ 0 ], this.tempPos[ 1 ] );
-    this.world.rotate( some.vec2.heading( this.tempAxis ) + some.vec2.heading( this.axis ) );
-    this.world.scale( this.to[ 0 ] / this.size[ 0 ], this.to[ 1 ] / this.size[ 1 ] ); 
-    this.world.translate( -this.anchor[ 0 ], -this.anchor[ 1 ] );
+    this.world.rotate( some.vec2.heading( this.axisOriginal ) - some.vec2.heading( this.tempAxis ) - some.vec2.heading( this.axisValue ) );
+    this.world.scale( this.sizeValue[ 0 ] / this.sizeOriginal[ 0 ], this.sizeValue[ 1 ] / this.sizeOriginal[ 1 ] ); 
+    this.world.translate( -this.anchorValue[ 0 ], -this.anchorValue[ 1 ] );
     this.world.strokeWeight( 1 / magnitude );
 
     this.representation();
   
     if ( DEBUG ) {
-      this.world.translate( this.anchor[ 0 ], this.anchor[ 1 ] );
+      this.world.translate( this.anchorValue[ 0 ], this.anchorValue[ 1 ] );
       this.world.rotate( -some.vec2.heading( this.tempAxis ) );
       
       //pink size
       this.world.stroke( 255, 100, 250 );
       this.world.strokeWeight( 2 );
-      this.world.line( 0,0 , this.to[ 0 ],this.to[ 1 ] );
+      this.world.line( 0,0 , this.sizeValue[ 0 ],this.sizeValue[ 1 ] );
       
       this.world.noStroke();
       
@@ -105,11 +123,11 @@ drawable.prototype.draw = function ( from, axis, axisX, axisY ) {
 
       // green size
       this.world.fill( 150, 150, 100 );
-      this.world.rect( this.to[ 0 ] - 4, this.to[ 1 ] - 4, 8,8 );
+      this.world.rect( this.sizeValue[ 0 ] - 4, this.sizeValue[ 1 ] - 4, 8,8 );
 
       //blue anchor
       this.world.fill( 200, 150, 100 ); 
-      this.world.rect( this.anchor[ 0 ] - 4, this.anchor[ 1 ] - 4, 8,8 );
+      this.world.rect( this.anchorValue[ 0 ] - 4, this.anchorValue[ 1 ] - 4, 8,8 );
       this.world.rotate( - some.vec2.heading( this.tempAxis ) );
 
       // axis
@@ -126,4 +144,5 @@ drawable.prototype.representation = function () {
 };
 
 some.drawable = drawable;
+
 module.exports = some;

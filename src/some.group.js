@@ -64,7 +64,7 @@ group.prototype.representation = function ( ) {
     p = this.drawablesPool.get();
     
     p.drawable.setPosition( n.from[ 0 ], n.from[ 1 ] );
-    p.drawable.setAxis( n.to[ 0 ], n.to[ 1 ] );
+    p.drawable.axis( n.to[ 0 ], n.to[ 1 ] );
 
     this.world.fill( this.colorsPool.get() );
     this.world.stroke( this.colorsPool.get() );
