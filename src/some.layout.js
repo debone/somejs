@@ -2,28 +2,23 @@
 
 var some = require( './some.core' );
 
-var layout = function ( world, flexible ) {
+var layout = function ( world, rigid ) {
   some.iterator.call( this, world );
 
-  this.initArrays = flexible ? this.initArraysFlexible : this.initArraysStatic;
-
-  this.init();
-  this.generate();
+  this.initArrays = rigid ? this.initArraysFlexible : this.initArraysStatic;
 
   return this;
 };
 
 layout.prototype = Object.create( some.iterator.prototype );
 
-layout.prototype.init = function( ) {
-  // layout preparation
-};
-
-layout.prototype.generate = function( ) {
-  // this.initArrays( steps )
-};
-
+// TODO this is not using Iteraaators :X is it?
 layout.prototype.initArraysStatic = function ( steps ) {
+  //iterator
+  this.length = steps;
+
+  this.steps = steps;
+
   this.fromVerts = new some.Array( steps );
   this.toVerts = new some.Array( steps );
 
@@ -32,12 +27,17 @@ layout.prototype.initArraysStatic = function ( steps ) {
 };
 
 layout.prototype.initArraysFlexible = function ( steps ) {
+  //iterator
+  this.length = steps;
+
+  this.steps = steps;
+
   this.fromVerts = [ ];
   this.toVerts = [ ];
 
   this.originVerts = [ ];
   this.originHeadings = [ ];
-}
+};
 
 layout.prototype.rotateVerts = function ( angle ) {
   angle = angle * some.toRadians;

@@ -2,14 +2,17 @@
 
 var some = require( './some.core' );
 
-var spine = function ( world, shapeBeziers, shapeAxis, steps ) {
-  some.layout.call( this, world );
+var spine = function ( world, shapeBeziers, shapeAxis, steps, precision ) {
+  some.layout.call( this, world, true );
   some.shape.call( this, world, shapeBeziers, shapeAxis );
 
   this.shapeLength = [ ];
   this.shapePoints = [ ];
 
   this.shapeTotalLength = 0.0;
+
+  this.init( precision );
+  this.generate( steps );
 
   return this;
 };
@@ -100,13 +103,13 @@ spine.prototype.generate = function ( steps ) {
   var progress = 0, 
       shapeProgress = 0.001,
       shapeStep = 0,
-      step = this.shapeTotalLength / steps,
-      t, s;
+      step, t, s;
 
-  this.initArrays( steps );
-  this.length = steps;
+  this.initArrays( steps || this.steps );
 
-  for( var i = 0; i < steps; i++, shapeProgress += step ) {
+  step = this.shapeTotalLength / this.steps;
+  
+  for( var i = 0; i < this.steps; i++, shapeProgress += step ) {
     if ( ( shapeProgress - progress ) > this.shapeLength[ shapeStep ] ) {
       progress += this.shapeLength[ shapeStep ];
       shapeStep++;
@@ -153,14 +156,6 @@ spine.prototype.generate = function ( steps ) {
     this.originHeadings[ i ] = some.vec2.heading( this.toVerts[ i ] );
 
     some.vec2.normalize( this.toVerts[ i ], this.toVerts[ i ] );
-
-    if ( bend === 1 ) {
-      some.vec2.mult( this.toVerts[ i ], -1, this.toVerts[ i ] );
-    }
-    else if ( bend === 2 ) {
-      some.vec2.copy( this.fromVerts[ i ], this.fromVerts[ i + steps ] );
-      some.vec2.copy( this.toVerts[ i ], this.toVerts[ i + steps ] );
-    }
   }
 
   return this;

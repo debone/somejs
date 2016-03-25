@@ -2,7 +2,7 @@
 
 var some = require( './some.core' );
 
-var shape = function ( world, shapeBeziers, shapeAxis ) {
+var shape = function ( world, shapeBeziers, shapeSize ) {
   some.drawable.call( this, world );
 
   this.shape = [ ];
@@ -10,14 +10,13 @@ var shape = function ( world, shapeBeziers, shapeAxis ) {
   this.c2 = [ ];
   this.shapeSize = shapeBeziers.length;
 
-  if ( shapeAxis instanceof some.vec2 ) {
-    this.axis = shapeAxis;
+  if ( shapeSize instanceof some.vec2 ) {
+    this.sizeOriginal = shapeSize;
   }
   else {
-    this.axis = some.vec2.create( shapeAxis.shift(), shapeAxis.shift() );
+    some.vec2.set( shapeSize.shift(), shapeSize.shift(), this.sizeOriginal );
   }
 
-  some.vec2.copy( this.axis, this.size );
   this.shapeSize = Math.floor( this.shapeSize / 6 );
 
   this.shape.push( some.vec2.create( shapeBeziers.shift(), shapeBeziers.shift() ) );
