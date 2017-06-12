@@ -1,5 +1,5 @@
 # some.js
-Generative Design lib
+Generative Design libl
 
 # Author
 Victor Debone
